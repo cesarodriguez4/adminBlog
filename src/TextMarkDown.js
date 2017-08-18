@@ -1,56 +1,57 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
-import MarkDown from 'react-markdown';
+import store from './store/Store';
+import { newTitle, newContent, newCover } from './actions/Actions';
 
 const dblock = {
 	display: 'block'
 };
 
-const initialState = {
-  previewText: ''
-};
-
 const MDStyle = {
   display: 'inline-block',
-  width: 400
+  width: '100%'
 };
-const PwStyle = {
-  display: 'inline-block',
-  width: 400,
-  float: 'right'
-};
+
 
 export default class TextMarkDow extends Component {
   constructor(props) {
     super(props);
-  	this.state = initialState;
     this.handlePreview = this.handlePreview.bind(this);
     this.handleHead = this.handleHead.bind(this);
   }
   handlePreview = event => {
-  	this.setState({previewText: event.target.value});
+  	store.dispatch(newContent(event.target.value));
   }
   handleHead = event => {
-  	this.setState({headText: event.target.value});
+  	store.dispatch(newTitle(event.target.value));
   }
+	handleCover = event => {
+		store.dispatch(newCover(event.target.value));
+	}
   render() {
   	return (
   		<div>
   		   <div style={MDStyle}>
-	  		<TextField style={dblock} 
-	  		  floatingLabelText='Title' 
-	  		  onChange={this.handleHead}/>
-	  		<TextField id='content' style={dblock} 
-	  		  hintText="Escribe algo asombroso"
-	          floatingLabelText="Contenido"
-	          multiLine={true}
-	          rows={3}
-	          fullWidth={true} onChange={this.handlePreview}/>
+    	  		<TextField style={dblock}
+    	  		  floatingLabelText='Title'
+							id="titlePub"
+    	  		  onBlur={this.handleHead}
+              value={this.props.title}
+              fullWidth={true}/>
+							<TextField style={dblock}
+							  id="cover"
+	    	  		  floatingLabelText='Cover Image'
+	    	  		  onBlur={this.handleCover}
+	              value={this.props.cover}
+	              fullWidth={true}/>
+    	  		<TextField id='content' style={dblock}
+							value={this.props.content}
+    	  		  hintText="Type some wonderful"
+    	          floatingLabelText="Content"
+    	          multiLine={true}
+    	          rows={3}
+    	          fullWidth={true} onBlur={this.handlePreview}/>
 	        </div>
-	        <div style={PwStyle}>
-	          <h1>{this.state.headText}</h1>
-              <MarkDown source={this.state.previewText}></MarkDown>
-            </div>
   		</div>);
   }
 }
